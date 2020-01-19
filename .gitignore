@@ -1,0 +1,10 @@
+*.ppt*
+*.csv
+*.logicdata
+.config/
+.lauches/
+.settings/
+.project
+.cproject
+build/
+bin/

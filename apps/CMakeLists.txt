@@ -1,0 +1,8 @@
+add_subdirectory(intermittent-rx)
+add_subdirectory(intermittent-tx)
+add_subdirectory(bike-rpm-tx)
+add_subdirectory(calib-charge-discharge)
+add_subdirectory(calib-accuracy)
+add_subdirectory(high-level-interface)
+add_subdirectory(raw-interface)
+add_subdirectory(asplos-ae-rx)
