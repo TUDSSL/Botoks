@@ -1,0 +1,377 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>TPSync &mdash; Botoks  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Radio" href="radio.html" />
+    <link rel="prev" title="Reproducibility" href="reproducibility.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Botoks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chrt.html">CHRT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproducibility.html">Reproducibility</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">TPSync</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#radio-synchronization">Radio synchronization</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#synchronization-error">Synchronization error</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#fine-tuning-tpsync">Fine-tuning TPSync</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="radio.html">Radio</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Botoks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>TPSync</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/tpsync.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="tpsync">
+<h1>TPSync<a class="headerlink" href="#tpsync" title="Permalink to this headline">¶</a></h1>
+<p>TPSync is a rudimentary node-to-node synchronization library for MSP430-based
+transiently-powered wireless sensors.  It provides a simple API to synchronize
+radio schedules of a transmitter and a receiver based on timing information
+collected with an intermittency-safe timekeeper (e.g., the <a class="reference internal" href="chrt.html"><span class="doc">CHRT</span></a>).</p>
+<div class="section" id="radio-synchronization">
+<h2>Radio synchronization<a class="headerlink" href="#radio-synchronization" title="Permalink to this headline">¶</a></h2>
+<p>TPSync allows a receiving node to synchronize to a periodic transmission
+schedule of a transmitting node.  For this to work, the transmitter attaches the
+current transmission period, i.e., the time interval between two packets, to
+every sent packet.</p>
+<p>If the transmission period is somewhat stable, the receiver can try to latch to
+that (or a multiple of that, in case the energy is not enough), and turn on its
+radio only when a packet is being transmitted.  As soon as the receiver
+successfully receives a packet, it uses the transmission period contained in the
+packet to calculate how long to delay its next reception attempt.  For instance,
+in the figure below, the receiver latches to the transmitter’s schedule after
+successfully receiving the third packet.</p>
+<a class="reference internal image-reference" href="_images/sync-1.svg"><div align="center" class="align-center"><img alt="_images/sync-1.svg" src="_images/sync-1.svg" width="80%" /></div>
+</a>
+<p>As shown below, the transmitter could compute its average wake-up period
+(transmission period) and send it using the radio</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Get elapsed time using CHRT. */</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">get_elapsed_time</span><span class="p">();</span>
+
+<span class="cm">/* Compute average TX period and add it to packet. */</span>
+<span class="n">avg_tx_period</span> <span class="o">=</span> <span class="n">get_avg_wakeup_period</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">);</span>
+<span class="n">packet</span><span class="p">.</span><span class="n">avg_tx_period</span> <span class="o">=</span> <span class="n">avg_tx_period</span><span class="p">;</span>
+
+<span class="cm">/* Send packet. */</span>
+<span class="n">send_packet</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packet</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>and the receiver could use the transmission period to delay its next listening
+activity</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Get elapsed time using CHRT. */</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">get_elapsed_time</span><span class="p">();</span>
+
+<span class="cm">/* Delay listening activity (avg_tx_period received in previous cycle). */</span>
+<span class="n">delay_radio_listening</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">,</span> <span class="n">packet</span><span class="p">.</span><span class="n">avg_tx_period</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="cm">/* Try to receive another packet. */</span>
+<span class="n">receive_packet</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packet</span><span class="p">);</span>
+</pre></div>
+</div>
+<p>The methods used in the examples above are documented here.</p>
+<dl class="function">
+<dt id="_CPPv421get_avg_wakeup_period8uint16_t">
+<span id="_CPPv321get_avg_wakeup_period8uint16_t"></span><span id="_CPPv221get_avg_wakeup_period8uint16_t"></span><span id="get_avg_wakeup_period__uint16_t"></span><span class="target" id="group__tpsync_1gabd64be80925a1077d99e0decb61de7e3"></span>uint16_t <code class="sig-name descname">get_avg_wakeup_period</code><span class="sig-paren">(</span>uint16_t <em>last_period</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421get_avg_wakeup_period8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Compute average wake-up period over a sliding window.</p>
+<p><p>This function calculates the average over a sliding window of the last wake-up periods.</p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>average of last <code class="docutils literal notranslate"><span class="pre">AVG_WINDOW</span></code> periods</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">last_period</span></code>: duration of the last wake-up cycle</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><code class="docutils literal notranslate"><a class="reference internal" href="#group__tpsync-conf_1ga8ba84d1070b79ee73bb292b997e848f4"><span class="std std-ref"><span class="pre">AVG_WINDOW</span></span></a></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421delay_radio_listening8uint16_t8uint16_t8uint16_t">
+<span id="_CPPv321delay_radio_listening8uint16_t8uint16_t8uint16_t"></span><span id="_CPPv221delay_radio_listening8uint16_t8uint16_t8uint16_t"></span><span id="delay_radio_listening__uint16_t.uint16_t.uint16_t"></span><span class="target" id="group__tpsync_1ga8ce57e3a6ad4a0b8f5682b4c6ffd71eb"></span>int <code class="sig-name descname">delay_radio_listening</code><span class="sig-paren">(</span>uint16_t <em>rx_wakeup_period</em>, uint16_t <em>tx_wakeup_period</em>, uint16_t <em>error</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421delay_radio_listening8uint16_t8uint16_t8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Delay radio reception to aligh to synchronized schedule.</p>
+<p><p>The delay is implemented as a low-power mode (LPM1) sleep interrupted by a timeout. SMCLK and TA1 are used to implement the timeout.</p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TPSYNC_NULL_TX_WUP</span></code> in case the wake-up cycle of the transmitting node has null duration, <code class="docutils literal notranslate"><span class="pre">TPSYNC_NULL_DELAY</span></code> in case reception is not delayed, <code class="docutils literal notranslate"><span class="pre">TPSYNC_NO_RX_SUCCESS</span></code> in case a packed was not received (and reception is not delayed), <code class="docutils literal notranslate"><span class="pre">TPSYNC_SUCCESS</span></code> otherwise</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rx_wakeup_period</span></code>: duration of the last wake-up cycle </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tx_wakeup_period</span></code>: duration of the last wake-up cycle of the transmitting node </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">error</span></code>: nominal timekeeping error</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><code class="docutils literal notranslate"><a class="reference internal" href="#group__tpsync-conf_1ga1f7161987209c870fe580d9bbc4f2181"><span class="std std-ref"><span class="pre">SYNC_SLACK_MS</span></span></a></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="synchronization-error">
+<h2>Synchronization error<a class="headerlink" href="#synchronization-error" title="Permalink to this headline">¶</a></h2>
+<p>When the receiver starts listening too early, some radio time is wasted (idle
+listening), potentially leading to premature power loss and packet miss.  To
+correct for such a synchronization error, the receiver can track idle time and
+try to minimize it in the next cycle.</p>
+<p>To do so, it is sufficient for the receiver to call <code class="docutils literal notranslate"><span class="pre">track_sync_error_start()</span></code>
+just before turning on its radio, and  <code class="docutils literal notranslate"><span class="pre">track_sync_error_stop()</span></code> when
+successfully receiving a packet.  The receiver’s code can be extended as
+follows:</p>
+<div class="highlight-c notranslate"><div class="highlight"><pre><span></span><span class="cm">/* Get elapsed time using CHRT. */</span>
+<span class="n">elapsed_time</span> <span class="o">=</span> <span class="n">get_elapsed_time</span><span class="p">();</span>
+
+<span class="cm">/* Delay listening activity (avg_tx_period received in previous cycle). */</span>
+<span class="n">delay_radio_listening</span><span class="p">(</span><span class="n">elapsed_time</span><span class="p">,</span> <span class="n">packet</span><span class="p">.</span><span class="n">avg_tx_period</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="cm">/* Start tracking sync error. */</span>
+<span class="n">track_sync_error_start</span><span class="p">();</span>
+
+<span class="cm">/* Try to receive another packet. */</span>
+<span class="n">receive_packet</span><span class="p">(</span><span class="o">&amp;</span><span class="n">packet</span><span class="p">);</span>
+
+<span class="cm">/* Stop tracking sync error. */</span>
+<span class="n">track_sync_error_stop</span><span class="p">();</span>
+</pre></div>
+</div>
+<p>TPSync will internally calculate the receiver’s idle time, after receiving a
+packer, and try to minimize it in the next <code class="docutils literal notranslate"><span class="pre">delay_radio_listening()</span></code>.</p>
+<dl class="function">
+<dt id="_CPPv422track_sync_error_startv">
+<span id="_CPPv322track_sync_error_startv"></span><span id="_CPPv222track_sync_error_startv"></span><span id="track_sync_error_start__void"></span><span class="target" id="group__tpsync-sync-err_1gac8eea68e983016c25aa4beb95eff6d81"></span>void <code class="sig-name descname">track_sync_error_start</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422track_sync_error_startv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Start tracking synchronization error.</p>
+<p>This function can be called when the receiving node wakes up to start tracking how much time is wasted waiting for a packet with the radio on.</p>
+<p><dl class="simple">
+<dt><strong>See</strong></dt><dd><p><code class="docutils literal notranslate"><a class="reference internal" href="#group__tpsync-sync-err_1gae86e5fbac585ffd62fb59f9481549a7d"><span class="std std-ref"><span class="pre">track_sync_error_stop()</span></span></a></code> </p>
+</dd>
+<dt><strong>See</strong></dt><dd><p><code class="docutils literal notranslate"><a class="reference internal" href="#group__tpsync-conf_1gaf326da845e2c7d438e43b54411a001eb"><span class="std std-ref"><span class="pre">ERROR_CORR_COEFF</span></span></a></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421track_sync_error_stopv">
+<span id="_CPPv321track_sync_error_stopv"></span><span id="_CPPv221track_sync_error_stopv"></span><span id="track_sync_error_stop__void"></span><span class="target" id="group__tpsync-sync-err_1gae86e5fbac585ffd62fb59f9481549a7d"></span>void <code class="sig-name descname">track_sync_error_stop</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421track_sync_error_stopv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stop tracking synchronization error.</p>
+<p>This function can be called upon reception of a packet to compute the total idle listening time. This information can be used in a subsequent radio cycle as a feedback control to minimize idle listening. <code class="docutils literal notranslate"><span class="pre">ERROR_CORR_COEFF</span></code> can be used to scale down the magnitude of the synchronization error, effectively working as the P parameter in a proportional feedback controller. </p>
+</dd></dl>
+
+</div>
+<div class="section" id="fine-tuning-tpsync">
+<h2>Fine-tuning TPSync<a class="headerlink" href="#fine-tuning-tpsync" title="Permalink to this headline">¶</a></h2>
+<dl class="macro">
+<dt id="c.AVG_WINDOW">
+<span class="target" id="group__tpsync-conf_1ga8ba84d1070b79ee73bb292b997e848f4"></span><code class="sig-name descname">AVG_WINDOW</code><a class="headerlink" href="#c.AVG_WINDOW" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of power cycles to use when computing the average wake-up period. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.ERROR_CORR_COEFF">
+<span class="target" id="group__tpsync-conf_1gaf326da845e2c7d438e43b54411a001eb"></span><code class="sig-name descname">ERROR_CORR_COEFF</code><a class="headerlink" href="#c.ERROR_CORR_COEFF" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls the scaling factor for error synchronization (use with track_sync_error_start and track_sync_error_stop). </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.SYNC_SLACK_MS">
+<span class="target" id="group__tpsync-conf_1ga1f7161987209c870fe580d9bbc4f2181"></span><code class="sig-name descname">SYNC_SLACK_MS</code><a class="headerlink" href="#c.SYNC_SLACK_MS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Controls how much the receiver wakes up ahead of schedule. A larger <code class="docutils literal notranslate"><span class="pre">SYNC_SLACK_MS</span></code> allows for more synchronization error, but increases energy consumption, and consequently the chance of missing a packet. </p>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="radio.html" class="btn btn-neutral float-right" title="Radio" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="reproducibility.html" class="btn btn-neutral float-left" title="Reproducibility" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jasper de Winkel, Carlo Delle Donne, Kasım Sinan Yıldırım,
+               Przemysław Pawełczak, Josiah Hester
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

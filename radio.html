@@ -1,0 +1,289 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Radio &mdash; Botoks  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="TPSync" href="tpsync.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Botoks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chrt.html">CHRT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproducibility.html">Reproducibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tpsync.html">TPSync</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Radio</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Botoks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Radio</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/radio.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="radio">
+<h1>Radio<a class="headerlink" href="#radio" title="Permalink to this headline">¶</a></h1>
+<p>To interface with the radio present on the Botoks platform (<a class="reference external" href="https://www.microsemi.com/product-directory/sub-ghz-radio-transceivers/3928-zl70550">ZL70550</a>) we developed a
+rudimentary driver. This library is capable of executing calibration,
+transmitting and receiving packets.</p>
+<p>First the driver needs to be initialized using <code class="docutils literal notranslate"><span class="pre">zl70550_init()</span></code> next the
+common registers have to be restored using <code class="docutils literal notranslate"><span class="pre">zl70550_restore_state()</span></code> and
+the operating frequency has to be set <code class="docutils literal notranslate"><span class="pre">zl70550_set_frequency()</span></code>.</p>
+<p>With the registers in the correct state now calibration can be executed
+<code class="docutils literal notranslate"><span class="pre">zl70550_calibrate()</span></code>.
+Calibration is only executed once on the first boot, afterwards it applies the
+previously determined calibration. This calibration is stored in FRAM.</p>
+<p>After calibration the radio is fully operational and can transmit
+<code class="docutils literal notranslate"><span class="pre">zl70550_packet_transmit()</span></code>  or receive <code class="docutils literal notranslate"><span class="pre">zl70550_packet_receive()</span></code>.</p>
+<dl class="function">
+<dt id="_CPPv412zl70550_initv">
+<span id="_CPPv312zl70550_initv"></span><span id="_CPPv212zl70550_initv"></span><span id="zl70550_init"></span><span class="target" id="group__ZL70550_1ga88d1e0c8b54d4bbb2d3d5f055fca511f"></span>void <code class="sig-name descname">zl70550_init</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv412zl70550_initv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialize ZL70550</p>
+<p>Initializes the GPIO and SPI to communicate with the ZL70550. Afterwards the ZL70550 is reset. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421zl70550_restore_statev">
+<span id="_CPPv321zl70550_restore_statev"></span><span id="_CPPv221zl70550_restore_statev"></span><span id="zl70550_restore_state"></span><span class="target" id="group__ZL70550_1ga8000db186794e185ab988a2ad393eed6"></span>void <code class="sig-name descname">zl70550_restore_state</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421zl70550_restore_statev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Restore the ZL70550’s registers to a know state</p>
+<p>Initializes the common registers required for operation. Operating frequency still has to be configured separately. Needs to be executed after <a class="reference internal" href="#group__ZL70550_1ga88d1e0c8b54d4bbb2d3d5f055fca511f"><span class="std std-ref">zl70550_init()</span></a> but before the device is used. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421zl70550_set_frequencyv">
+<span id="_CPPv321zl70550_set_frequencyv"></span><span id="_CPPv221zl70550_set_frequencyv"></span><span id="zl70550_set_frequency"></span><span class="target" id="group__ZL70550_1ga5d17f43963e6ac7a98d9873cd058ecac"></span>void <code class="sig-name descname">zl70550_set_frequency</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421zl70550_set_frequencyv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set operation frequency</p>
+<p>Sets the operating frequency to 869.7 Mhz. Needs to be executed after <a class="reference internal" href="#group__ZL70550_1ga88d1e0c8b54d4bbb2d3d5f055fca511f"><span class="std std-ref">zl70550_init()</span></a> but before the device is used. </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv422zl70550_packet_receiveP7uint8_tb">
+<span id="_CPPv322zl70550_packet_receiveP7uint8_tb"></span><span id="_CPPv222zl70550_packet_receiveP7uint8_tb"></span><span id="zl70550_packet_receive__uint8_tP.b"></span><span class="target" id="group__ZL70550_1ga1be973865e98ade4fcf481d482bbbc5a"></span>void <code class="sig-name descname">zl70550_packet_receive</code><span class="sig-paren">(</span>uint8_t *<em>rx_buffer</em>, bool <em>forever</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv422zl70550_packet_receiveP7uint8_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Receive packet</p>
+<p>Function that can be used to receive a packet to a provided <code class="docutils literal notranslate"><span class="pre">rx_buffer</span></code>. Additionally it can operate in a perpetual loop with the <code class="docutils literal notranslate"><span class="pre">forever</span></code> flag. Hamming encoding is enabled.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">rx_buffer</span></code>: Output: Buffer in which the data will be stored. </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">forever</span></code>: Flag to signal a perpetual receive loop. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423zl70550_packet_transmitP7uint8_t8uint16_t">
+<span id="_CPPv323zl70550_packet_transmitP7uint8_t8uint16_t"></span><span id="_CPPv223zl70550_packet_transmitP7uint8_t8uint16_t"></span><span id="zl70550_packet_transmit__uint8_tP.uint16_t"></span><span class="target" id="group__ZL70550_1gaa0e01d10f33dbdd6a16feedb7d5d0eb8"></span>void <code class="sig-name descname">zl70550_packet_transmit</code><span class="sig-paren">(</span>uint8_t *<em>data</em>, uint16_t <em>length</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423zl70550_packet_transmitP7uint8_t8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Transmit a packet</p>
+<p>Transmits the data contained in the <code class="docutils literal notranslate"><span class="pre">data</span></code> parameter with length <code class="docutils literal notranslate"><span class="pre">length</span></code>. CSMA is disabled and Hamming encoding is enabled.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">data</span></code>: Data to transmit </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">length</span></code>: Length of the <code class="docutils literal notranslate"><span class="pre">data</span></code> to transmit </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv417zl70550_calibratev">
+<span id="_CPPv317zl70550_calibratev"></span><span id="_CPPv217zl70550_calibratev"></span><span id="zl70550_calibrate"></span><span class="target" id="group__ZL70550_1ga5038951094b1e79cada264af4e8e368f"></span>void <code class="sig-name descname">zl70550_calibrate</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv417zl70550_calibratev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>ZL70550 Calibration Calibration routine</p>
+<p>Execute the required calibration routine on the ZL70550. It calibrates the following:<ul class="simple">
+<li><p>Current reference</p></li>
+<li><p>RCO</p></li>
+<li><p>VCO amplitude</p></li>
+<li><p>VCO frequency</p></li>
+<li><p>Peak detector;</p></li>
+<li><p>Antenna output</p></li>
+<li><p>LNA</p></li>
+<li><p>RC filter</p></li>
+<li><p>FSK frequency deviation </p></li>
+</ul>
+</p>
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="tpsync.html" class="btn btn-neutral float-left" title="TPSync" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jasper de Winkel, Carlo Delle Donne, Kasım Sinan Yıldırım,
+               Przemysław Pawełczak, Josiah Hester
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

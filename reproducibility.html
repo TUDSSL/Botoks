@@ -1,0 +1,329 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Reproducibility &mdash; Botoks  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="TPSync" href="tpsync.html" />
+    <link rel="prev" title="Hardware" href="hardware.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Botoks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="chrt.html">CHRT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Reproducibility</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#applications">Applications</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#bike-speedometer">Bike speedometer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#network-synchronization">Network synchronization</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#chrt-accuracy">CHRT Accuracy</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="tpsync.html">TPSync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radio.html">Radio</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Botoks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>Reproducibility</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/reproducibility.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="reproducibility">
+<h1>Reproducibility<a class="headerlink" href="#reproducibility" title="Permalink to this headline">¶</a></h1>
+<p>In this section the steps required to reproduce the results presented in the
+paper are explained.</p>
+<div class="section" id="applications">
+<h2>Applications<a class="headerlink" href="#applications" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="bike-speedometer">
+<h3>Bike speedometer<a class="headerlink" href="#bike-speedometer" title="Permalink to this headline">¶</a></h3>
+<ol class="arabic">
+<li><p>Replace Botoks’s solar cell with a magnetic energy harvester (one commonly
+found in inductive <a class="reference external" href="https://www.reelight.com/products/hub-lights">bike lights</a>), and attach it to the fork
+of a bike, behind the wheel.</p></li>
+<li><p>Connect one GPIO of Botoks to a logic analyzer to measure reboot periods and
+have a ground truth for the RPM of the wheel.</p></li>
+<li><p>Connect Botoks to a debugger capable of debugging the MSP430 line of
+products.  <em>Set the target voltage to 2.2V</em> to avoid back-feeding.  Then
+power Botox using the auxiliary power connector on the PCB.  The voltage
+provided needs to be between 3.4 and 5V.</p></li>
+<li><p>Program the <code class="docutils literal notranslate"><span class="pre">bike-rpm-tx</span></code> application using UniFlash:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./flash.sh bin/bike-rpm-tx.out
+</pre></div>
+</div>
+</li>
+<li><p>Program another Botoks node to receive radio packets from the other node on
+the bike.  Have this latter node continuously powered, and record reboot
+periods contained in radio packets.</p></li>
+</ol>
+<p>To produce the graph in the paper (Figure 9) convert reboot periods to RPM and
+then to km/h (that depends on the radius of the wheel) of both the ground truth,
+extracted with the logic analyzer, and the CHRT-measured results, collected by
+the continuously-powered Botoks receiver.</p>
+</div>
+<div class="section" id="network-synchronization">
+<h3>Network synchronization<a class="headerlink" href="#network-synchronization" title="Permalink to this headline">¶</a></h3>
+<p>We have established a point-to-point link with two nodes powered by solar
+energy, in one experiment, and radio-frequency energy, in another experiment.
+The solar energy was generated by two independent light bulbs placed in two
+closed boxes and collected by Botoks’s solar panel.  The radio-frequency energy
+was provided by a Powercast transmitter <a class="reference external" href="http://www.powercastco.com/wp-content/uploads/2016/11/User-Manual-TX-915-01-Rev-A-4.pdf">Powercast transmitter</a>
+and harvested by a <a class="reference external" href="http://www.powercastco.com/wp-content/uploads/2016/11/p2110-evb1.pdf">Powercast receiver</a>
+connected to Botoks’s power supply (in place of the solar cell).  In the
+application, the transmitting node would wake up to send one packet of data,
+using its buffered energy, eventually incurring a power failure, proceeding then
+to harvest energy and finally recharge and wake up again.  Similarly, the
+receiving node would wake up and start listening until receiving a packet, or
+until a power outage.</p>
+<ol class="arabic">
+<li><p>Connect one Botoks to a debugger capable of debugging the MSP430 line of
+products.  <em>Set the target voltage to 2.2V</em> to avoid back-feeding.  Then
+power Botox using the auxiliary power connector on the PCB.  The voltage
+provided needs to be between 3.4 and 5V.</p></li>
+<li><p>Program the <code class="docutils literal notranslate"><span class="pre">intermittent-tx</span></code> application using UniFlash:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./flash.sh bin/intermittent-tx.out
+</pre></div>
+</div>
+</li>
+<li><p>Program the second Botoks with the <code class="docutils literal notranslate"><span class="pre">intermittent-rx</span></code> application:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./flash.sh bin/intermittent-rx.out
+</pre></div>
+</div>
+</li>
+<li><p>Connect both nodes to a logic analyzer to record sent and received packets.</p></li>
+<li><p>For the solar energy experiment, place each node in a box that can filter out
+external light, and place a controllable light bulb in each of the box.  Then
+turn on the light bulbs to start the experiment.</p></li>
+<li><p>After 10 minutes, turn off the lights to conclude the experiment.</p></li>
+</ol>
+<p>Use the logic analyzer data to compute the ratio between received and sent
+packets and produce the graphs as in the paper (Figure 10).</p>
+</div>
+</div>
+<div class="section" id="chrt-accuracy">
+<h2>CHRT Accuracy<a class="headerlink" href="#chrt-accuracy" title="Permalink to this headline">¶</a></h2>
+<p>In this procedure we assume the CHRT already has been calibrated. Please refer to
+the CHRT section for instructions on how to calibrate the CHRT.</p>
+<p>In order to verify the results presented about the accuracy of the CHRT the following steps are executed:</p>
+<ol class="arabic simple">
+<li><p>Connect Botoks to a debugger capable of debugging the MSP430 line of
+products.  <em>Set the target voltage to 2.2V</em> to avoid back-feeding.  Then
+power Botox using the auxiliary power connector on the PCB.  The voltage
+provided needs to be between 3.4 and 5V.</p></li>
+<li><p>Program the <cite>calib-accuracy</cite> application using Uniflash.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./flash.sh  bin/calib-accuracy-t0.out
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="3">
+<li><p>Monitor the output.</p></li>
+</ol>
+<blockquote>
+<div><div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ picocom /dev/ttyACM1 -b <span class="m">19200</span> --imap lfcrlf
+</pre></div>
+</div>
+</div></blockquote>
+<ol class="arabic simple" start="4">
+<li><p>Repeat this process 10 times (go back to step 2).</p></li>
+<li><p>In previous steps the accuracy of tier 0 was measured. Now this process is
+repeated for every other tier. Change <cite>t0</cite> to <cite>t1</cite>, <cite>t2</cite> or <cite>t3</cite> in the bash call
+to program the device.</p></li>
+</ol>
+<p>With the measurements completed, we processed the data as follows:</p>
+<ul class="simple">
+<li><p>Average the reported time for each time-step of the 10 runs for tier 0 and tier 3.
+These results are presented in figure 7a and 7b.</p></li>
+<li><p>For figure 7c and 7d, first the error is computed by deducting the expected time from the measurement.
+Next all of the computed errors for a tier (so over the whole timing range and 10 executions)
+are binned into -2, -1, 0, 1, 2 bins and from this the percentages are computed
+that are shown in figure 7c and 7d.</p></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="tpsync.html" class="btn btn-neutral float-right" title="TPSync" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="hardware.html" class="btn btn-neutral float-left" title="Hardware" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jasper de Winkel, Carlo Delle Donne, Kasım Sinan Yıldırım,
+               Przemysław Pawełczak, Josiah Hester
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

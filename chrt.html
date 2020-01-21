@@ -1,0 +1,741 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>CHRT &mdash; Botoks  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Applications" href="applications.html" />
+    <link rel="prev" title="Botoks" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> Botoks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">CHRT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#raw-api">Raw API</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#high-level-api">High-level API</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#fine-tuning-chrt-behavior">Fine-tuning CHRT behavior</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#calibration">Calibration</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#charge-discharge-time-calibration">Charge/Discharge time calibration</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#accuracy-calibration">Accuracy calibration</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#examples">Examples</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#id2">High-level API</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id3">Raw API</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproducibility.html">Reproducibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tpsync.html">TPSync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radio.html">Radio</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Botoks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html">Docs</a> &raquo;</li>
+        
+      <li>CHRT</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/chrt.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="chrt">
+<h1>CHRT<a class="headerlink" href="#chrt" title="Permalink to this headline">¶</a></h1>
+<p>The main idea is to combine multiple capacitive timekeepers of different sizes
+into a Cascaded Hierarchical Remanence Timekeeper (CHRT).  The various tiers of
+the CHRT can be used to minimize cold-boot time and energy consumption, and
+maximize resolution and timekeeping range at run-time.  The tiers are linked
+together, from smallest to largest, so that a depleted tier can automatically
+activate the next tier, therefore increasing the total timing range, whilst
+maintaining the best possible resolution.  For short time intervals, the smaller
+tiers provide higher resolution and consume less energy.  The larger tiers are
+used to time longer intervals, but have lower resolution and need more charging
+energy.  To be able to use the CHRT, the cascaded tiers have to be pre-charged
+at each reboot.  Our hardware abstraction layer, can be configured to minimize
+energy consumption depending on the needs of an application and the expectations
+of energy availability of the environment, by specifying how many tiers should
+be pre-charged at each reboot.</p>
+<a class="reference internal image-reference" href="_images/chrt.svg"><div align="center" class="align-center"><img alt="_images/chrt.svg" src="_images/chrt.svg" width="100%" /></div>
+</a>
+<p>Programmers and intermittent kernel designers can choose to be either
+conservative or adaptive with tier recharging.  Adaptive timekeeper provisioning
+is useful when energy environments and application behavior are somewhat
+predictable or continuous (for example, solar environments).  The basic idea of
+adaptive tier recharge is to choose only the smallest tier that can still
+satisfy the timing requirements.  The adaptive method saves energy since
+overcharging the timekeeper when the kernel is only timing a short outage is
+wasteful.  When the reboot frequency is variable the kernel may choose to be
+conservative in timekeeper provisioning (tier recharging), as retrieved times
+are more likely to be outside the timekeeping range of the current target tier.
+For better robustness against variable reboot frequency, the user can request
+the CHRT to charge more than just the current target tier.  Specifically, the
+two function parameters KL and KR are used to tell the CHRT software layer to
+charge all tiers in [Tx−KL,Tx+KR], given that Tx is the current target tier.
+For instance, if KL = KR = 1, tiers Tx−1, Tx and Tx+1 would be recharged on
+reboot, and the discharge would start from tier Tx−1, and continue with the
+larger tiers in a cascaded fashion.  The parameters KL and KR control the
+trade-off between timekeeping robustness and energy consumption, as charging
+more tiers requires more energy.  In particular, KR has a higher impact on
+energy consumption, due to larger tiers needing more charging energy.</p>
+<div class="section" id="raw-api">
+<span id="id1"></span><h2>Raw API<a class="headerlink" href="#raw-api" title="Permalink to this headline">¶</a></h2>
+<p>The raw CHRT interface is a hardware abstraction layer (HAL) of the underlying
+timekeeping hardware functionality, to be used for low-level control of the
+CHRT.  It is mostly intended as a building block for more advanced timekeeping
+duties to be exposed by the runtime or kernel that has knowledge of the user
+tasks and operations, but can be used at the application level as well by the
+user.</p>
+<p>Upon reboot first <code class="docutils literal notranslate"><span class="pre">chrt_init()</span></code> has to be called followed by
+<code class="docutils literal notranslate"><span class="pre">chrt_get_time()</span></code> to get the elapsed time of the power failure that was just
+recovered from.  Next, the CHRT needs to be recharged using <code class="docutils literal notranslate"><span class="pre">chrt_charge()</span></code>.</p>
+<dl class="function">
+<dt id="_CPPv49chrt_init7uint8_t7uint8_t7uint8_tb">
+<span id="_CPPv39chrt_init7uint8_t7uint8_t7uint8_tb"></span><span id="_CPPv29chrt_init7uint8_t7uint8_t7uint8_tb"></span><span id="chrt_init__uint8_t.uint8_t.uint8_t.b"></span><span class="target" id="group__CHRT_1ga2d0d451c520f9b9280a634b5e0c3e7fa"></span>uint8_t <code class="sig-name descname">chrt_init</code><span class="sig-paren">(</span>uint8_t <em>start_tier</em>, uint8_t <em>KR</em>, uint8_t <em>KL</em>, bool <em>fix_tiers</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv49chrt_init7uint8_t7uint8_t7uint8_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialize the CHRT.</p>
+<p>Configure I/O and initializes non-volatile variables such as calibration constants on first boot after programming.</p>
+<p><p>Smaller values of KR and KL minimize energy consumption, as fewer tiers are recharged each time. Larger values minimize timekeeping errors when timed intervals vary more quickly. </p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TK_SUCCESS</span></code></p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">start_tier</span></code>: first CHRT tier to be charged on first boot </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KR</span></code>: number of additional tiers larger than the current one to recharge </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">KL</span></code>: number of additional tiers smaller than the current one to recharge </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fix_tiers</span></code>: whether to charge the same tier (<code class="docutils literal notranslate"><span class="pre">start_tier</span></code>) throughout the whole application (<em>only for debugging</em>)</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv411chrt_chargev">
+<span id="_CPPv311chrt_chargev"></span><span id="_CPPv211chrt_chargev"></span><span id="chrt_charge"></span><span class="target" id="group__CHRT_1ga892938ac29bc9db25356959b9a682134"></span>uint8_t <code class="sig-name descname">chrt_charge</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411chrt_chargev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Charge the CHRT.</p>
+<p>Depending on the last on-off period, the current (optimal) tier will change when the last measurement was near the limits of the current tier. This combined with the margins specified in <a class="reference internal" href="#group__CHRT_1ga2d0d451c520f9b9280a634b5e0c3e7fa"><span class="std std-ref">chrt_init()</span></a> ensure that the CHRT follows changes in energy availability.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TK_SUCCESS</span></code> </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv413chrt_get_timeP8uint16_tP8uint16_tb">
+<span id="_CPPv313chrt_get_timeP8uint16_tP8uint16_tb"></span><span id="_CPPv213chrt_get_timeP8uint16_tP8uint16_tb"></span><span id="chrt_get_time__uint16_tP.uint16_tP.b"></span><span class="target" id="group__CHRT_1gaa3433575428c7242a3bbaee5c7119513"></span>uint8_t <code class="sig-name descname">chrt_get_time</code><span class="sig-paren">(</span>uint16_t *<em>resolution</em>, uint16_t *<em>time</em>, bool <em>cmp_chr_time</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv413chrt_get_timeP8uint16_tP8uint16_tb" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Retrieve time from the CHRT.</p>
+<p>Depending on the margin specified in <a class="reference internal" href="#group__CHRT_1ga2d0d451c520f9b9280a634b5e0c3e7fa"><span class="std std-ref">chrt_init()</span></a>, this function samples the tiers to retrieve a notion of time.</p>
+<p><p>To obtain time in millisecond, multiply time by resolution. </p>
+<dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TK_SUCCESS</span></code>, or <code class="docutils literal notranslate"><span class="pre">TK_ERROR</span></code> when operating outside of the CHRT optimal timing range</p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">resolution</span></code>: measurement resolution in ms </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">time</span></code>: time elapsed since last recharge </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">cmp_chr_time</span></code>: when true compensates the timing output for charging times</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="section" id="high-level-api">
+<h2>High-level API<a class="headerlink" href="#high-level-api" title="Permalink to this headline">¶</a></h2>
+<p>The high-level CHRT interface enhances raw functionalities to provide
+higher-level timekeeping tools to be used in real-world batteryless
+applications for intermittent devices.  Fundamentally, this is implemented
+combining CHRT functionalities with an on-board MCU digital timer to maintain
+an always-available system time.  The system time is incremented at each reboot
+using the raw <code class="docutils literal notranslate"><span class="pre">chrt_get_time()</span></code> function.  When queried during on-time, the
+system time is combined with timing information retrieved from the digital
+timer running in the background.  The system time is used to generate
+timestamps and to set expiration timers for data and functions.</p>
+<dl class="function">
+<dt id="_CPPv411tptime_initv">
+<span id="_CPPv311tptime_initv"></span><span id="_CPPv211tptime_initv"></span><span id="tptime_init__void"></span><span class="target" id="group__tptime_1ga549e1dbb3888cf58a95f9afc87048c39"></span>void <code class="sig-name descname">tptime_init</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv411tptime_initv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Initialize timekeeping subsystem.</p>
+<p>This function inctrements system time at each reboot, querying the CHRT, and recharges the CHRT as well. It must be called at the beginning of the <code class="docutils literal notranslate"><span class="pre">main()</span></code>.</p>
+<p><strong>Note</strong>: The timekeeping subsystem uses an MCU timer with a specific clock configuration, take this into account when designing your application. For the MSP430FR59xx, it is timer TA0 with SMCLK at 0.25 MHz </p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv420tptime_get_timestampv">
+<span id="_CPPv320tptime_get_timestampv"></span><span id="_CPPv220tptime_get_timestampv"></span><span id="tptime_get_timestamp__void"></span><span class="target" id="group__tptime_1ga41b3a6cf2b9eab4db72181c5666b9114"></span>uint32_t <code class="sig-name descname">tptime_get_timestamp</code><span class="sig-paren">(</span>void<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv420tptime_get_timestampv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Get timestamp (current time) in milliseconds.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p>system time in milliseconds </p>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv421tptime_set_expirationPv8uint32_t">
+<span id="_CPPv321tptime_set_expirationPv8uint32_t"></span><span id="_CPPv221tptime_set_expirationPv8uint32_t"></span><span id="tptime_set_expiration__voidP.uint32_t"></span><span class="target" id="group__tptime_1ga110546519b463228ff540304fcc71275"></span>int8_t <code class="sig-name descname">tptime_set_expiration</code><span class="sig-paren">(</span>void *<em>tag</em>, uint32_t <em>expiration</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv421tptime_set_expirationPv8uint32_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set expiration time, in milliseconds, for an arbitraty object.</p>
+<p>The expiration time is relative to the current system time (as would be returned by <code class="docutils literal notranslate"><a class="reference internal" href="#group__tptime_1ga41b3a6cf2b9eab4db72181c5666b9114"><span class="std std-ref"><span class="pre">tptime_get_timestamp()</span></span></a></code>). An object can be a variable, an array, a function or any other arbitrary void pointer. The expiration status of the given object can be checked with <code class="docutils literal notranslate"><a class="reference internal" href="#group__tptime_1ga1347c48ab9533161bf120cfe37aebbab"><span class="std std-ref"><span class="pre">tptime_has_expired()</span></span></a></code>.</p>
+<p><strong>Note</strong>: This function uses <code class="docutils literal notranslate"><span class="pre">malloc()</span></code> internally. Expiration times are not deallocated unless the user explicitely calls <code class="docutils literal notranslate"><a class="reference internal" href="#group__tptime_1ga61f380c69ab13ea264499a1df7221e5a"><span class="std std-ref"><span class="pre">tptime_clear_expiration()</span></span></a></code>.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TPTIME_OK</span></code> or <code class="docutils literal notranslate"><span class="pre">TPTIME_MEM_ERROR</span></code> </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tag</span></code>: void pointer to object to set expiration time for </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">expiration</span></code>: expiration time, in milliseconds, relative to current time</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv423tptime_clear_expirationPv">
+<span id="_CPPv323tptime_clear_expirationPv"></span><span id="_CPPv223tptime_clear_expirationPv"></span><span id="tptime_clear_expiration__voidP"></span><span class="target" id="group__tptime_1ga61f380c69ab13ea264499a1df7221e5a"></span>int8_t <code class="sig-name descname">tptime_clear_expiration</code><span class="sig-paren">(</span>void *<em>tag</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv423tptime_clear_expirationPv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Clear expiration time.</p>
+<p>An expiration time previously set with <code class="docutils literal notranslate"><a class="reference internal" href="#group__tptime_1ga110546519b463228ff540304fcc71275"><span class="std std-ref"><span class="pre">tptime_set_expiration()</span></span></a></code> can be deallocated using this function.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TPTIME_OK</span></code> or <code class="docutils literal notranslate"><span class="pre">TPTIME_OBJ_NOT_FOUND</span></code> </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tag</span></code>: void pointer to object to clear expiration time of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="function">
+<dt id="_CPPv418tptime_has_expiredPv">
+<span id="_CPPv318tptime_has_expiredPv"></span><span id="_CPPv218tptime_has_expiredPv"></span><span id="tptime_has_expired__voidP"></span><span class="target" id="group__tptime_1ga1347c48ab9533161bf120cfe37aebbab"></span>int8_t <code class="sig-name descname">tptime_has_expired</code><span class="sig-paren">(</span>void *<em>tag</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv418tptime_has_expiredPv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Check if given object has expired.</p>
+<p><dl class="simple">
+<dt><strong>Return</strong></dt><dd><p><code class="docutils literal notranslate"><span class="pre">TPTIME_OBJ_EXPIRED</span></code>, <code class="docutils literal notranslate"><span class="pre">TPTIME_OBJ_VALID</span></code> or <code class="docutils literal notranslate"><span class="pre">TPTIME_OBJ_NOT_FOUND</span></code> </p>
+</dd>
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">tag</span></code>: void pointer to object to check expiration of</p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<div class="section" id="fine-tuning-chrt-behavior">
+<h3>Fine-tuning CHRT behavior<a class="headerlink" href="#fine-tuning-chrt-behavior" title="Permalink to this headline">¶</a></h3>
+<p>To tune the CHRT behavior when using the high-level API, you can tweak the
+following parameters in <code class="docutils literal notranslate"><span class="pre">tptime.h</span></code>.  Refer to <code class="docutils literal notranslate"><span class="pre">chrt_init()</span></code> in the
+<a class="reference internal" href="#raw-api"><span class="std std-ref">raw API</span></a> for the meaning of each.</p>
+<dl class="macro">
+<dt id="c.TPTIME_CHRT_START_TIER">
+<span class="target" id="group__tptime-conf_1ga000e6d2db44311d8b09e17adcab25e29"></span><code class="sig-name descname">TPTIME_CHRT_START_TIER</code><a class="headerlink" href="#c.TPTIME_CHRT_START_TIER" title="Permalink to this definition">¶</a></dt>
+<dd><p>First CHRT tier to be recharged on first boot. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.TPTIME_CHRT_MARGIN_UP">
+<span class="target" id="group__tptime-conf_1ga996b00138bbd2dfdb368bd44c2c99f0b"></span><code class="sig-name descname">TPTIME_CHRT_MARGIN_UP</code><a class="headerlink" href="#c.TPTIME_CHRT_MARGIN_UP" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of additional tiers, larger than the current one, to recharge. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.TPTIME_CHRT_MARGIN_DOWN">
+<span class="target" id="group__tptime-conf_1gac86e420343d9fa8c626deea38e76fe71"></span><code class="sig-name descname">TPTIME_CHRT_MARGIN_DOWN</code><a class="headerlink" href="#c.TPTIME_CHRT_MARGIN_DOWN" title="Permalink to this definition">¶</a></dt>
+<dd><p>Number of additional tiers, smaller than the current one, to recharge. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.TPTIME_CHRT_FIX_TIERS">
+<span class="target" id="group__tptime-conf_1gaf73b3438fb4e00fc854bc4068b25c9f3"></span><code class="sig-name descname">TPTIME_CHRT_FIX_TIERS</code><a class="headerlink" href="#c.TPTIME_CHRT_FIX_TIERS" title="Permalink to this definition">¶</a></dt>
+<dd><p>Whether to charge the same tier throughout the whole application. </p>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="calibration">
+<span id="chrt-calibration"></span><h2>Calibration<a class="headerlink" href="#calibration" title="Permalink to this headline">¶</a></h2>
+<p>Ideally, the RC circuit discharge model, t = −RC ln(V/V0), could be used to
+estimate elapsed time, t.  In actuality, capacitance C and resistance R never
+match their nominal values, and other parasitic capacitors and resistors are
+spread through the circuit.  To resolve this issue, a software calibration
+routine, to be performed before CHRT deployment, was devised and implemented,
+aiming for a better precision and accuracy of the timekeeper.  During
+calibration, all the tiers of the CHRT are repeatedly charged and discharged,
+and their discharging profile is sampled over time to obtain a realistic
+physical model for each tier.  This way, an interpolated version of the RC
+circuit discharge model is built and stored in the form of a lookup table.  At
+run-time, the voltage across the target tier is used to look up the table and
+retrieve the corresponding elapsed time.</p>
+<p>This process consists of two steps starting with the charge/discharge time
+calibration, followed by accuracy calibration.</p>
+<div class="section" id="charge-discharge-time-calibration">
+<h3>Charge/Discharge time calibration<a class="headerlink" href="#charge-discharge-time-calibration" title="Permalink to this headline">¶</a></h3>
+<p>To calibrate the charging/discharging times please follow the process described below.</p>
+<ol class="arabic">
+<li><p>Connect Botoks to a debugger capable of debugging the MSP430 line of
+products.  <em>Set the target voltage to 2.2V</em> to avoid back-feeding.  Then
+power Botox using the auxiliary power connector on the PCB.  The voltage
+provided needs to be between 3.4 and 5V.</p></li>
+<li><p>Program the calib-charge-discharge application using Uniflash.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ ./flash.sh  bin/calib-charge-discharge.out
+</pre></div>
+</div>
+</li>
+<li><p>Connect to the programmers UART interface (Usually the higher of the two COM
+ports) with your favorite monitor software such as <a class="reference external" href="https://linux.die.net/man/8/picocom">picocom</a> and monitor the output.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ picocom /dev/ttyACM1 -b <span class="m">19200</span> --imap lfcrlf
+</pre></div>
+</div>
+</li>
+<li><p>Using the output modify the constants listed below in ‘chrt.h’</p></li>
+</ol>
+<p>To reach optimal accuracy the charge and discharge constants might need to
+manually tuned.</p>
+<dl class="group">
+<dt>
+<span class="target" id="group__CHRT__CHRCONF"></span><em>group</em> <code class="sig-name descname">CHRT_CHRCONF</code></dt>
+<dd><p>Sets the delay required to fully charge a specific tier. Defined in loops of <code class="docutils literal notranslate"><span class="pre">DELAY_CYCLES</span></code> </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_0">
+<span class="target" id="group__CHRT__CHRCONF_1gaac96d70dd0fc976b7c84d26ebdc2ba36"></span><code class="sig-name descname">TIER_CHARGE_TIME_0</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_1">
+<span class="target" id="group__CHRT__CHRCONF_1ga670a1595371ff9d34508fe988f09fc9a"></span><code class="sig-name descname">TIER_CHARGE_TIME_1</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_2">
+<span class="target" id="group__CHRT__CHRCONF_1ga11e8a250f84c519dbf4756e9c0b14f50"></span><code class="sig-name descname">TIER_CHARGE_TIME_2</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_3">
+<span class="target" id="group__CHRT__CHRCONF_1ga43ce8ecd8a28607b6babfeae6593da44"></span><code class="sig-name descname">TIER_CHARGE_TIME_3</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="group">
+<dt>
+<span class="target" id="group__CHRT__CHRCMP"></span><em>group</em> <code class="sig-name descname">CHRT_CHRCMP</code></dt>
+<dd><p>Sets the optionally applied charge time compensation for tier 0. (Charge time is only significant to tiers 0 and 1) Defined in ms. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_0_MS">
+<span class="target" id="group__CHRT__CHRCMP_1gaa0910c360e0a9197d8107a5ad9c5fc0a"></span><code class="sig-name descname">TIER_CHARGE_TIME_0_MS</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_0_MS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_1_MS">
+<span class="target" id="group__CHRT__CHRCMP_1gac325d4000bf7950bca49d6e692701f41"></span><code class="sig-name descname">TIER_CHARGE_TIME_1_MS</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_1_MS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_2_MS">
+<span class="target" id="group__CHRT__CHRCMP_1ga88b9053cf1091a9135ed591adb67a7b6"></span><code class="sig-name descname">TIER_CHARGE_TIME_2_MS</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_2_MS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_CHARGE_TIME_3_MS">
+<span class="target" id="group__CHRT__CHRCMP_1ga77cd60745c7104262e6c574bd6e8da21"></span><code class="sig-name descname">TIER_CHARGE_TIME_3_MS</code><a class="headerlink" href="#c.TIER_CHARGE_TIME_3_MS" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+<dl class="group">
+<dt>
+<span class="target" id="group__CHRT__DISCONF"></span><em>group</em> <code class="sig-name descname">CHRT_DISCONF</code></dt>
+<dd><p>Sets the delay required to fully discharge a specific tier. Defined in loops of <code class="docutils literal notranslate"><span class="pre">DELAY_CYCLES</span></code> </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="macro">
+<dt id="c.TIER_DISCHARGE_TIME_0">
+<span class="target" id="group__CHRT__DISCONF_1ga78cda5c1910aad18cd7dfd0551b19896"></span><code class="sig-name descname">TIER_DISCHARGE_TIME_0</code><a class="headerlink" href="#c.TIER_DISCHARGE_TIME_0" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_DISCHARGE_TIME_1">
+<span class="target" id="group__CHRT__DISCONF_1gae813e08ccd560bac8253a37b5f319963"></span><code class="sig-name descname">TIER_DISCHARGE_TIME_1</code><a class="headerlink" href="#c.TIER_DISCHARGE_TIME_1" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_DISCHARGE_TIME_2">
+<span class="target" id="group__CHRT__DISCONF_1ga5140f2d5698bae2d2fb2ad5043b47035"></span><code class="sig-name descname">TIER_DISCHARGE_TIME_2</code><a class="headerlink" href="#c.TIER_DISCHARGE_TIME_2" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_DISCHARGE_TIME_3">
+<span class="target" id="group__CHRT__DISCONF_1ga018127a509df90f22c7b5cf2ee881a49"></span><code class="sig-name descname">TIER_DISCHARGE_TIME_3</code><a class="headerlink" href="#c.TIER_DISCHARGE_TIME_3" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+<div class="section" id="accuracy-calibration">
+<h3>Accuracy calibration<a class="headerlink" href="#accuracy-calibration" title="Permalink to this headline">¶</a></h3>
+<p>The accuracy calibration process is automated in the calibrate.py script.  This
+scripts programs the accuracy calibration application, monitors the output,
+creates a calibration file and then fits a RC curve using MATLAB on this
+calibration data.  The process is repeated for each tier.  When the RC constants
+for each tier is determined, lut.py is called to create a look-up table (lut.c)
+based on the previously determined RC constants.  Upon completion of the program
+the new lut.c can replace the provided lut.c.</p>
+<p>From within the scripts folder:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>$ python calibrate.py
+$ mv -f lut.c ../libs/chrt/src/
+</pre></div>
+</div>
+<p>To reach optimal accuracy the constants compensating for tier transitions might
+need to manually tuned.  These constants are listed below.</p>
+<dl class="group">
+<dt>
+<span class="target" id="group__CHRT__CASCONF"></span><em>group</em> <code class="sig-name descname">CHRT_CASCONF</code></dt>
+<dd><p>These constants define the total time of the tier used as compensation when sampling multiple tiers. </p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Defines</p>
+<dl class="macro">
+<dt id="c.TIER_TOTAL_TIME_0">
+<span class="target" id="group__CHRT__CASCONF_1gaba8694fc5c6330cd860b63b6a81fc7e1"></span><code class="sig-name descname">TIER_TOTAL_TIME_0</code><a class="headerlink" href="#c.TIER_TOTAL_TIME_0" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defined in the resolution of tier 1. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_TOTAL_TIME_1">
+<span class="target" id="group__CHRT__CASCONF_1ga6a556ff5361b45ffe1a9c973043d583f"></span><code class="sig-name descname">TIER_TOTAL_TIME_1</code><a class="headerlink" href="#c.TIER_TOTAL_TIME_1" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defined in the resolution of tier 2. </p>
+</dd></dl>
+
+<dl class="macro">
+<dt id="c.TIER_TOTAL_TIME_2">
+<span class="target" id="group__CHRT__CASCONF_1ga378e7e5d07cc84c5503ff54d7820fbcf"></span><code class="sig-name descname">TIER_TOTAL_TIME_2</code><a class="headerlink" href="#c.TIER_TOTAL_TIME_2" title="Permalink to this definition">¶</a></dt>
+<dd><p>Defined in the resolution of tier 3. </p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<p>Below some sample applications are listed to showcase the usage of the raw API and the
+high-level API.</p>
+<div class="section" id="id2">
+<h3>High-level API<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>This example utilizes the high level API to check the if variable <strong>foo_data</strong>
+has expired. Is simulates intermittency with a software reset and a delay.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;chrt.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;chrt_calib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mspbase.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mspprintf.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;platform.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;tptime.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#define CLEAR_EXPIRATION 0</span>
+
+<span class="n">__nv</span> <span class="kt">uint16_t</span> <span class="n">foo_data</span> <span class="o">=</span> <span class="mh">0xF00</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">msp_watchdog_disable</span><span class="p">();</span>
+
+  <span class="cm">/* Initialize and configure pins. */</span>
+  <span class="n">msp_gpio_init_all_ports</span><span class="p">();</span>
+  <span class="n">msp_gpio_unlock</span><span class="p">();</span>
+
+  <span class="cm">/* Change clock frequency to 8 MHz for MCLK and SMCLK. */</span>
+  <span class="n">msp_clock_set_mclk</span><span class="p">(</span><span class="n">CLK_8_MHZ</span><span class="p">,</span> <span class="n">SMCLK_8_MHZ</span><span class="p">);</span>
+
+  <span class="n">msp_uart_open</span><span class="p">();</span>
+
+  <span class="n">msp_gpio_dir_out</span><span class="p">(</span><span class="n">DBG_PORT</span><span class="p">,</span> <span class="n">DEBUG_POWER_PIN</span><span class="p">);</span>
+  <span class="n">msp_gpio_spike</span><span class="p">(</span><span class="n">DBG_PORT</span><span class="p">,</span> <span class="n">DEBUG_POWER_PIN</span><span class="p">);</span>
+  <span class="cm">/* 10ms delay. */</span>
+  <span class="n">__delay_cycles</span><span class="p">(</span><span class="mi">80000</span><span class="p">);</span>
+
+  <span class="cm">/* Initialize TPTime. */</span>
+  <span class="n">tptime_init</span><span class="p">();</span>
+
+  <span class="cm">/* Check for expiration of variable. */</span>
+  <span class="kt">int8_t</span> <span class="n">result</span> <span class="o">=</span> <span class="n">tptime_has_expired</span><span class="p">(</span><span class="o">&amp;</span><span class="n">foo_data</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">TPTIME_OBJ_EXPIRED</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">msp_printf</span><span class="p">(</span><span class="s">&quot;Pre-set: Variable &#39;foo_data&#39; has expired.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="cp">#if CLEAR_EXPIRATION</span>
+    <span class="n">tptime_clear_expiration</span><span class="p">(</span><span class="o">&amp;</span><span class="n">foo_data</span><span class="p">);</span>
+<span class="cp">#endif</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">TPTIME_OBJ_NOT_FOUND</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">msp_printf</span><span class="p">(</span><span class="s">&quot;Pre-set: Variable &#39;foo_data&#39; not found.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+  <span class="cm">/* Print timestamp. */</span>
+  <span class="kt">uint32_t</span> <span class="n">timestamp</span> <span class="o">=</span> <span class="n">tptime_get_timestamp</span><span class="p">();</span>
+  <span class="n">msp_printf</span><span class="p">(</span><span class="s">&quot;System time: %l</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">timestamp</span><span class="p">);</span>
+
+  <span class="cm">/* Set expiration for variable (expires in 50ms). */</span>
+  <span class="n">tptime_set_expiration</span><span class="p">(</span><span class="o">&amp;</span><span class="n">foo_data</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+
+  <span class="cm">/* Check for expiration of variable. */</span>
+  <span class="n">result</span> <span class="o">=</span> <span class="n">tptime_has_expired</span><span class="p">(</span><span class="o">&amp;</span><span class="n">foo_data</span><span class="p">);</span>
+  <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">TPTIME_OBJ_EXPIRED</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">msp_printf</span><span class="p">(</span><span class="s">&quot;Post-set: Variable &#39;foo_data&#39; has expired.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+<span class="cp">#if CLEAR_EXPIRATION</span>
+    <span class="n">tptime_clear_expiration</span><span class="p">(</span><span class="o">&amp;</span><span class="n">foo_data</span><span class="p">);</span>
+<span class="cp">#endif</span>
+  <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="n">TPTIME_OBJ_NOT_FOUND</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">msp_printf</span><span class="p">(</span><span class="s">&quot;Post-set: Variable &#39;foo_data&#39; not found.</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">);</span>
+  <span class="p">}</span>
+
+
+  <span class="cm">/* Reset the MCU simulating intermittency. */</span>
+  <span class="n">WDTCTL</span> <span class="o">=</span> <span class="mh">0xDEAD</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id3">
+<h3>Raw API<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>This example leverages the low level interface to measure time. Please note that
+In this example the charging time of the CHRT is not compensated for.</p>
+<div class="highlight-C notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&lt;chrt.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;chrt_calib.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;msp430.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mspbase.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;mspprintf.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;platform.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdint.h&gt;</span><span class="cp"></span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+  <span class="n">msp_watchdog_disable</span><span class="p">();</span>
+
+  <span class="cm">/* Initialize and configure pins. */</span>
+  <span class="n">msp_gpio_init_all_ports</span><span class="p">();</span>
+  <span class="n">msp_gpio_unlock</span><span class="p">();</span>
+
+  <span class="cm">/* Change clock frequency to 8 MHz for MCLK and SMCLK. */</span>
+  <span class="n">msp_clock_set_mclk</span><span class="p">(</span><span class="n">CLK_8_MHZ</span><span class="p">,</span> <span class="n">SMCLK_8_MHZ</span><span class="p">);</span>
+
+  <span class="n">msp_uart_open</span><span class="p">();</span>
+
+  <span class="n">msp_gpio_dir_out</span><span class="p">(</span><span class="n">DBG_PORT</span><span class="p">,</span> <span class="n">DEBUG_POWER_PIN</span><span class="p">);</span>
+  <span class="n">msp_gpio_spike</span><span class="p">(</span><span class="n">DBG_PORT</span><span class="p">,</span> <span class="n">DEBUG_POWER_PIN</span><span class="p">);</span>
+
+  <span class="cm">/* 10ms delay. */</span>
+  <span class="n">__delay_cycles</span><span class="p">(</span><span class="mi">80000</span><span class="p">);</span>
+
+  <span class="cm">/* Initialize Raw API. */</span>
+  <span class="n">chrt_init</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">N_TIERS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="n">N_TIERS</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+  <span class="cm">/* Retrieve the time. (charging time not compensated). */</span>
+  <span class="kt">uint16_t</span> <span class="n">time_meas</span><span class="p">,</span> <span class="n">resolution</span><span class="p">;</span>
+  <span class="n">chrt_get_time</span><span class="p">(</span><span class="o">&amp;</span><span class="n">resolution</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">time_meas</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+
+  <span class="cm">/* Charge the CHRT */</span>
+  <span class="n">chrt_charge</span><span class="p">();</span>
+
+  <span class="kt">uint32_t</span> <span class="n">time_meas_ms</span> <span class="o">=</span> <span class="p">(</span><span class="kt">uint32_t</span><span class="p">)</span><span class="n">resolution</span> <span class="o">*</span> <span class="n">time_meas</span><span class="p">;</span>
+  <span class="n">msp_printf</span><span class="p">(</span><span class="s">&quot;Measured time: %l, Resolution: %u, Raw time: %u</span><span class="se">\n</span><span class="s">&quot;</span><span class="p">,</span> <span class="n">time_meas_ms</span><span class="p">,</span>
+             <span class="n">resolution</span><span class="p">,</span> <span class="n">time_meas</span><span class="p">);</span>
+
+  <span class="cm">/* Reset the MCU simulating intermittency. */</span>
+  <span class="n">WDTCTL</span> <span class="o">=</span> <span class="mh">0xDEAD</span><span class="p">;</span>
+
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="applications.html" class="btn btn-neutral float-right" title="Applications" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="Botoks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jasper de Winkel, Carlo Delle Donne, Kasım Sinan Yıldırım,
+               Przemysław Pawełczak, Josiah Hester
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

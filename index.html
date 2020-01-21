@@ -1,0 +1,338 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Botoks &mdash; Botoks  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script type="text/javascript" src="_static/jquery.js"></script>
+        <script type="text/javascript" src="_static/underscore.js"></script>
+        <script type="text/javascript" src="_static/doctools.js"></script>
+        <script type="text/javascript" src="_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CHRT" href="chrt.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="#" class="icon icon-home"> Botoks
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="chrt.html">CHRT</a></li>
+<li class="toctree-l1"><a class="reference internal" href="applications.html">Applications</a></li>
+<li class="toctree-l1"><a class="reference internal" href="hardware.html">Hardware</a></li>
+<li class="toctree-l1"><a class="reference internal" href="reproducibility.html">Reproducibility</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tpsync.html">TPSync</a></li>
+<li class="toctree-l1"><a class="reference internal" href="radio.html">Radio</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Index</a>
+  
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Botoks</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#">Docs</a> &raquo;</li>
+        
+      <li>Botoks</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="botoks">
+<h1>Botoks<a class="headerlink" href="#botoks" title="Permalink to this headline">¶</a></h1>
+<p>Botoks is a batteryless timekeeping sensor that operates intermittently
+harvesting ambient energy.  Botoks’s hardware and software components enable IoT
+applications that require precise and intermittency-safe timekeeping.  Both
+hardware design and software stack are open-source.</p>
+<p>The <em>cascaded hierarchical remanence timekeeper</em> (CHRT) embedded on Botoks is a
+novel remanence timekeeper architecture.  In principle, capacitive remanence
+timekeepers are simple RC circuits whose energy level is converted into time.
+The sensor is based on an MSP430 ultra-low-power, FRAM-enabled microcontroller
+(MSP430FR5994), and currently the software stack only supports this MCU.</p>
+<p>To know more about them and the CHRT, refer to these docs and our paper (to be
+made public):</p>
+<blockquote>
+<div><p>J. de Winkel, C. Delle Donne, K. S. Yıldırım, P. Pawełczak and J. Hester.
+<em>Reliable Timekeeping for Intermittent Computing</em>. ASPLOS 2020.</p>
+</div></blockquote>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p>Botoks’s code can be built installing the MSP430-GCC toolchain, or using a
+preconfigured Docker container.  Opting for the Docker container has the
+advantage of not having to install the toolchain, but requires you to mount the
+directory of the project into the container.</p>
+<p>Executables can be uploaded and debugged using UniFlash or Code Composer Studio
+(CCS).  The former method is easier to script, whilst the latter gives you
+access to a graphical IDE.</p>
+<p>The following versions of CMake, MSP430-GCC and UniFlash were tested, but other
+versions might work as well.</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 7%" />
+<col style="width: 84%" />
+</colgroup>
+<tbody>
+<tr class="row-odd"><td><p>CMake</p></td>
+<td><p>3.13</p></td>
+<td><p><a class="reference external" href="https://cmake.org/download/">download</a></p></td>
+</tr>
+<tr class="row-even"><td><p>MSP430-GCC</p></td>
+<td><p>8.3.0</p></td>
+<td><p><a class="reference external" href="http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/index_FDS.html">download</a></p></td>
+</tr>
+<tr class="row-odd"><td><p>UniFlash</p></td>
+<td><p>5.2.0</p></td>
+<td><p><a class="reference external" href="http://www.ti.com/tool/UNIFLASH">download</a></p></td>
+</tr>
+</tbody>
+</table>
+<div class="section" id="building-with-the-docker-container">
+<h3>Building with the Docker container<a class="headerlink" href="#building-with-the-docker-container" title="Permalink to this headline">¶</a></h3>
+<p>You can use the <code class="docutils literal notranslate"><span class="pre">build_with_docker.sh</span></code> script to build all applications inside
+a Docker container.  Install <code class="docutils literal notranslate"><span class="pre">docker</span></code> on your machine and start/enable the
+<code class="docutils literal notranslate"><span class="pre">docker</span></code> daemon.  Moreover, make sure that you can <code class="docutils literal notranslate"><span class="pre">docker</span></code> commands
+<strong>without</strong> root privileges (check <a class="reference external" href="https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user">here</a>).  The script uses
+<a class="reference external" href="https://hub.docker.com/r/cdelledonne/msp430-gcc">this docker image</a> to build applications inside a Docker
+container pre-configured with CMake and the MSP430-GCC toolchain.</p>
+<p>You can pass <code class="docutils literal notranslate"><span class="pre">-t</span> <span class="pre">&lt;target&gt;</span></code> to the script to specify a target for <code class="docutils literal notranslate"><span class="pre">make</span></code>.
+For instance, to build all projects and install the generated executables in the
+<code class="docutils literal notranslate"><span class="pre">bin/</span></code> folder of this repository, run</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./build_with_docker.sh -t install
+</pre></div>
+</div>
+</div>
+<div class="section" id="building-without-the-docker-container">
+<h3>Building without the Docker container<a class="headerlink" href="#building-without-the-docker-container" title="Permalink to this headline">¶</a></h3>
+<p>First of all, install CMake and the MSP430-GCC toolchain.  CMake can be
+installed using your OS’s package manager, though the latest version might not
+be available.  In that case, download the binaries using the link above.  As for
+the GCC toolchain, you can use the provided <code class="docutils literal notranslate"><span class="pre">install_toolchain.sh</span></code> script to
+download and install toolchain and support files.</p>
+<p>To install, do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ MSP430_GCC_OS=linux64   # can be &#39;linux32&#39; or &#39;macos&#39; instead
+$ INSTALL_PREFIX=~/ti     # where to install the toolchain
+$ ./install_toolchain.sh
+</pre></div>
+</div>
+<p>This will download toolchain and other support files from <a class="reference external" href="http://software-dl.ti.com/msp430/msp430_public_sw/mcu/msp430/MSPGCC/latest/index_FDS.html">TI’s website</a> , and
+install them at <code class="docutils literal notranslate"><span class="pre">$INSTALL_PREFIX/msp430-gcc</span></code>.  Then, assign the environment
+variable <code class="docutils literal notranslate"><span class="pre">MSP430_TOOLCHAIN_PATH</span></code> the absolute path to the root directory of
+the toolchain, e.g.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ export MSP430_TOOLCHAIN_PATH=~/ti/msp430-gcc
+</pre></div>
+</div>
+<p>Finally, to build all projects, do</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ git clone https://github.com/TUDSSL/Botoks.git
+$ cd Botoks
+$ mkdir build &amp;&amp; cd build
+$ cmake ..
+$ make
+</pre></div>
+</div>
+<p>Then run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">install</span></code> to build all projects and install the generated
+executables in the <code class="docutils literal notranslate"><span class="pre">bin/</span></code> folder of this repository.  To build applications
+individually, run <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">&lt;app-name&gt;</span></code>.</p>
+</div>
+<div class="section" id="running-applications">
+<h3>Running applications<a class="headerlink" href="#running-applications" title="Permalink to this headline">¶</a></h3>
+<p>First, connect Botoks to a debugger capable of debugging the MSP430 line of
+products.  Then power Botox using the auxiliary power connector on the PCB.  The
+voltage provided needs to be between 3.4 and 5V.</p>
+<p>To upload an application install <a class="reference external" href="http://www.ti.com/tool/UNIFLASH">UniFlash</a>.  As of now, all scripts
+assume UniFlash is installed at <code class="docutils literal notranslate"><span class="pre">/opt/ti/uniflash</span></code>.  From the project’s
+directory root, run:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ ./flash.sh bin/&lt;app-name&gt;.out
+</pre></div>
+</div>
+<p>The serial output can now be monitored using your favorite serial monitor (e.g.,
+<a class="reference external" href="https://linux.die.net/man/8/picocom">picocom</a>) with a baudrate of 19200.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>$ picocom /dev/ttyACM1 -b 19200 --imap lfcrlf
+</pre></div>
+</div>
+</div>
+<div class="section" id="calibration">
+<h3>Calibration<a class="headerlink" href="#calibration" title="Permalink to this headline">¶</a></h3>
+<p>For the calibration procedure please refer to <a class="reference internal" href="chrt.html#chrt-calibration"><span class="std std-ref">this section</span></a>.  Running the calibration procedure requires a licensed
+version of <a class="reference external" href="https://www.mathworks.com/products/matlab.html">Matlab</a> and the serial terminal <code class="docutils literal notranslate"><span class="pre">picocom</span></code>.</p>
+</div>
+</div>
+<div class="section" id="documentation">
+<h2>Documentation<a class="headerlink" href="#documentation" title="Permalink to this headline">¶</a></h2>
+<p>Botoks’s documentation is hosted here.  For instance, start reading about the
+<a class="reference internal" href="chrt.html"><span class="doc">CHRT</span></a>.  Then, checkout the <a class="reference internal" href="applications.html"><span class="doc">applications</span></a>.  Have a
+look at the <a class="reference internal" href="hardware.html"><span class="doc">hardware implementation</span></a> as well, if you wish.</p>
+</div>
+<div class="section" id="hardware">
+<h2>Hardware<a class="headerlink" href="#hardware" title="Permalink to this headline">¶</a></h2>
+<p>The hardware is designed in <a class="reference external" href="http://www.kicad-pcb.org/">Kicad</a>, however, PDF schematics and
+gerbers are available in the hardware folder.</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="chrt.html" class="btn btn-neutral float-right" title="CHRT" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Jasper de Winkel, Carlo Delle Donne, Kasım Sinan Yıldırım,
+               Przemysław Pawełczak, Josiah Hester
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
