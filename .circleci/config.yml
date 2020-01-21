@@ -1,0 +1,76 @@
+version: 2.1
+
+jobs:
+
+  # https://hub.docker.com/r/cdelledonne/msp430-gcc
+  # https://github.com/cdelledonne/docker-msp430-gcc
+  build:
+    docker:
+      - image: cdelledonne/msp430-gcc:0.5
+    steps:
+      - checkout
+      - run:
+          name: Build docs
+          command: |
+            mkdir build && cd build
+            cmake -DBUILD_DOCS=1 ..
+            make docs
+      - persist_to_workspace:
+          root: build/docs
+          paths:
+            - html
+
+  # Git's user.email and user.name are arbitrary. To generate a GitHub
+  # read/write deploy key, create a local SSH key pair on your machine:
+  #
+  # $ ssh-keygen -m PEM -t rsa -C "email@example.com"
+  #
+  # and name it something like 'my_project_deploy_rsa'.
+  #
+  # Then, navigate to your project settings on CircleCI, and add an SSH key with
+  # 'github.com' as the hostname, and copy the content of your private key.
+  # Then, remove your local copy of the private key:
+  #
+  # $ rm my_project_deploy_rsa
+  #
+  # Copy the resulting fingerprint into the add_ssh_keys step below. Finally,
+  # navigate to your project settings on GitHub, and add a deploy key with write
+  # access, with a title of your choice and the content of your public key (in
+  # this example, my_project_deploy_rsa.pub). Now you can delete your local copy
+  # of the public key as well:
+  #
+  # $ rm my_project_deploy_rsa.pub
+  deploy:
+    docker:
+      - image: node:8.16.2-buster
+    steps:
+      - checkout
+      - attach_workspace:
+          at: build/docs
+      - run:
+          name: Install gh-pages module
+          command: |
+            npm install -g --silent gh-pages@2.1.1
+            git config user.email "ci-deploy@tudssl.nl"
+            git config user.name "ci-deploy"
+      - add_ssh_keys:
+          fingerprints:
+              - "7b:ad:96:79:0c:56:bf:a6:f3:c3:cd:18:d6:f2:e0:79"
+      - run:
+          name: Deploy docs to gh-pages branch
+          command: gh-pages --dotfiles --message "Updates [ci skip]" --dist build/docs/html
+
+workflows:
+  version: 2.1
+  build_docs_and_deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only: master
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: master
