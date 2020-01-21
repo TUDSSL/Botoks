@@ -15,6 +15,7 @@ jobs:
             mkdir build && cd build
             cmake -DBUILD_DOCS=1 ..
             make docs
+            touch docs/.nojekyll
       - persist_to_workspace:
           root: build/docs
           paths:
