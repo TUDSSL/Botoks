@@ -170,5 +170,5 @@ are available in the [hardware][hardware] folder.
 [docker-no-root]: https://docs.docker.com/install/linux/linux-postinstall/#manage-docker-as-a-non-root-user
 [docker-image]: https://hub.docker.com/r/cdelledonne/msp430-gcc
 [matlab]: https://www.mathworks.com/products/matlab.html
-[kicad]: http://www.kicad-pcb.org/
+[kicad]: http://www.kicad.org/
 [hardware]: ./hardware
